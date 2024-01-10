@@ -14,3 +14,14 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+//mongodb connection
+const url = `mongodb+srv://${process.env.MONOGO_db}:${process.env.MONGO_PASSWORD}@cluster0.5qzrcwe.mongodb.net/?retryWrites=true&w=majority`;
+mongoose.connect(url);
+const con=mongoose.connection;
+con.on("error", (error) => {
+  console.log(error);
+});
+con.once("connected", () => {
+  console.log("MongoDb Database Connected");
+});
