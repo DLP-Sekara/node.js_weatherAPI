@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from 'dotenv';
 import mongoose from "mongoose";
+import userRoute from './src/routes/userRoutes';
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,9 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+app.use(express.json());
+//routes
+app.use('/user',userRoute);
 
 //mongodb connection
 const url = `mongodb+srv://${process.env.MONOGO_db}:${process.env.MONGO_PASSWORD}@cluster0.5qzrcwe.mongodb.net/?retryWrites=true&w=majority`;
