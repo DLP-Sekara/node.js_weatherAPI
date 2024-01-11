@@ -9,11 +9,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
-  weatherData: {
-    required: true,
-    type: String,
-  },
+  weatherData: [
+    {
+      date: { type: Date, default: Date.now },
+      time: { type: String, default: Date.now },
+      temperature: Number,
+      weatherStatus: String,
+      humidity: Number,
+      windSpeed: Number,
+      feels_like: String,
+    },
+  ],
 });
 
 const userModel = mongoose.model("Data", userSchema);
 export default userModel;
+ 

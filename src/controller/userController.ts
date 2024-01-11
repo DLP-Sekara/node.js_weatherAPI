@@ -13,7 +13,7 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const getUserWeatherReport=async (req:Request,res:Response) => {
     try{
-        const response = await getUserWeatherReportService(req.params.date);
+        const response = await getUserWeatherReportService(req.body);
         res.send(response);
     }catch(error){
         console.log('error- ',error);
