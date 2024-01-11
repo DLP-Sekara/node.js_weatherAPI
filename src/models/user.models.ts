@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     {
       date: { type: Date, default: Date.now },
       time: { type: String, default: Date.now },
+      city:String,
       temperature: Number,
       weatherStatus: String,
       humidity: Number,
