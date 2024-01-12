@@ -1,7 +1,13 @@
 import userModel from "../models/user.models";
-import { WeatherData } from "../utils/interfaces";
+import {
+  updateDataBody,
+  userDetailInterface,
+  userWeatherRepotCredentials,
+  weatherDataCredentials,
+} from "../utils/interfaces";
 import { weatherDataByLocation } from "./weatherService";
 
+//get all users
 export const getUserService = async (): Promise<any> => {
   try {
     const userData = await userModel.find();
@@ -12,7 +18,10 @@ export const getUserService = async (): Promise<any> => {
   }
 };
 
-export const getUserWeatherReportService = async (data: any) => {
+//get weather report by email and date
+export const getUserWeatherReportService = async (
+  data: userWeatherRepotCredentials
+) => {
   try {
     const { email, date } = data;
     const checkAvailability = await userModel.findOne({ email: email });
@@ -43,27 +52,32 @@ export const getUserWeatherReportService = async (data: any) => {
   }
 };
 
-export const saveUserService = async (data: any) => {
+//save new user
+export const saveUserService = async (data: userDetailInterface) => {
   try {
     const checkAvailability = await userModel.findOne({ email: data.email });
     if (checkAvailability == null) {
       const weatherData = await weatherDataByLocation(data.location);
-      const newUser = new userModel({
-        email: data.email,
-        location: data.location,
-        weatherData: {
-          date: new Date(),
-          time: new Date().toTimeString(),
-          city: weatherData.city,
-          temperature: weatherData.temperature,
-          weatherStatus: weatherData.weatherStatus,
-          humidity: weatherData.humidity,
-          windSpeed: weatherData.windSpeed,
-          feels_like: weatherData.feels_like,
-        },
-      });
-      const userData = await newUser.save();
-      return { message: "User Added successfully !", userData };
+      if (weatherData != null) {
+        const newUser = new userModel({
+          email: data.email,
+          location: data.location,
+          weatherData: {
+            date: new Date(),
+            time: new Date().toTimeString(),
+            city: weatherData.city,
+            temperature: weatherData.temperature,
+            weatherStatus: weatherData.weatherStatus,
+            humidity: weatherData.humidity,
+            windSpeed: weatherData.windSpeed,
+            feels_like: weatherData.feels_like,
+          },
+        });
+        const userData = await newUser.save();
+        return { message: "User Added successfully !", userData };
+      } else {
+        return "invalid location,check your location name again !";
+      }
     } else {
       return { message: "Already existing user!" };
     }
@@ -73,17 +87,25 @@ export const saveUserService = async (data: any) => {
   }
 };
 
-export const updateUserService = async (data: any) => {
+//update user
+export const updateUserService = async (data: updateDataBody) => {
   try {
     const checkAvailability = await userModel.findOne({ email: data.email });
+    const weatherData = await weatherDataByLocation(data.location);
     if (checkAvailability != null) {
-      const { _id, ...updateData } = data;
-      const userData = await userModel.findOneAndUpdate({ _id }, updateData);
-      await updateUserWeatherService({
-        id: _id,
-        location: updateData.location,
-      });
-      return { message: "User updated successfully !", userData };
+      if (weatherData != null) {
+        const { _id, ...updateData } = data;
+        const userData = await userModel.findOneAndUpdate({ _id }, updateData);
+
+        //add new location weather
+        await updateUserWeatherService({
+          id: _id,
+          location: updateData.location,
+        });
+        return { message: "User updated successfully !", userData };
+      } else {
+        return "invalid location,check your location name again !";
+      }
     } else {
       return { message: "No such user !" };
     }
@@ -93,9 +115,13 @@ export const updateUserService = async (data: any) => {
   }
 };
 
-export const updateUserWeatherService = async (data: any) => {
+//update user weatherData
+export const updateUserWeatherService = async (
+  data: weatherDataCredentials
+) => {
   try {
     const weatherData = await weatherDataByLocation(data.location);
+
     const user = await userModel.findById(data.id);
     user?.weatherData.push({
       date: new Date(),
@@ -114,4 +140,3 @@ export const updateUserWeatherService = async (data: any) => {
     return error;
   }
 };
-

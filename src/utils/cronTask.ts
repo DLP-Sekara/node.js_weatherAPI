@@ -3,15 +3,16 @@ import {
   updateUserWeatherService,
 } from "../services/userService";
 import nodemailer from "nodemailer";
-import fs from "fs";
-import PDFDocument from "pdfkit";
+import dotenv from "dotenv";
+dotenv.config();
 
+//set weather Detils every 1h
 export const setWeatherHourly = async () => {
   try {
     console.log("=========================");
     const allUsers = await getUserService();
     allUsers.forEach(async (user: any) => {
-      const setNewWeatherData = await updateUserWeatherService({
+      await updateUserWeatherService({
         id: user._id,
         location: user.location,
       });
@@ -21,6 +22,7 @@ export const setWeatherHourly = async () => {
   }
 };
 
+//genarate past 3hours weather report every 3h
 export const sendWeatherReport = async () => {
   try {
     const allUsers = await getUserService();
@@ -32,7 +34,8 @@ export const sendWeatherReport = async () => {
         weatherDataSet.push(user.weatherData[user.weatherData.length - 3]);
         weatherDataSet.push(user.weatherData[user.weatherData.length - 2]);
         weatherDataSet.push(user.weatherData[user.weatherData.length - 1]);
-        emailService(weatherDataSet, user.email);
+
+        await emailService(weatherDataSet, user.email);
       }
     });
   } catch (error) {
@@ -40,19 +43,20 @@ export const sendWeatherReport = async () => {
   }
 };
 
+//send weather report via email
 const emailService = async (data: any, email: String) => {
   try {
     const jsonData = JSON.stringify(data, null, 2);
     let mailTransporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "luxsiri812@gmail.com",
-        pass: "ofbx znki bcvp grng",
+        user: process.env.BASE_EMAIL,
+        pass: process.env.APP_PASSWORD,
       },
     });
 
     let mailDetails: any = {
-      from: "luxsiri812@gmail.com",
+      from: process.env.BASE_EMAIL,
       to: JSON.stringify(email),
       subject: `Hourly weather reports of ${data[0].city}`,
       text: "See attached JSON file for hourly weather reports.",

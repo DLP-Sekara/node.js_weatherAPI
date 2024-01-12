@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getUserService, getUserWeatherReportService, saveUserService, updateUserService } from "../services/userService";
+import { validationResult } from "express-validator";
 
 export const getUser = async (req: Request, res: Response) => {
   try {
@@ -23,6 +24,7 @@ export const getUserWeatherReport=async (req:Request,res:Response) => {
 
 export const saveUser = async (req: Request, res: Response) => {
   try {
+   
     const response = await saveUserService(req.body);
     res.send(response);
   } catch (error) {

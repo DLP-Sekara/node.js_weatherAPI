@@ -20,8 +20,8 @@ app.use(express.json());
 app.use("/user", userRoute);
 
 //mongodb connection
-//const url = `mongodb+srv://${process.env.MONOGO_db}:${process.env.MONGO_PASSWORD}@cluster0.5qzrcwe.mongodb.net/?retryWrites=true&w=majority`;
-const url = "mongodb://localhost/weatherAPI";
+const url = `mongodb+srv://${process.env.MONOGO_db}:${process.env.MONGO_PASSWORD}@cluster0.5qzrcwe.mongodb.net/?retryWrites=true&w=majority`;
+//const url = "mongodb://localhost/weatherAPI";
 mongoose.connect(url);
 const con = mongoose.connection;
 con.on("error", (error) => {
@@ -32,18 +32,20 @@ con.once("connected", () => {
 });
 
 //cron job
-cron.schedule("0 * * * *", async () => {
+cron.schedule("*/10 * * * * *", async () => {
   try {
-    await setWeatherHourly();
+    //await setWeatherHourly();
   } catch (error) {
     console.log("cron error-", error);
   }
 });
 
-cron.schedule("0 */3 * * *", async () => {
+cron.schedule("*/30 * * * * *", async () => {
   try {
-    await sendWeatherReport();
+    //await sendWeatherReport();
   } catch (error) {
     console.log("cron error-", error);
   }
 });
+//0 * * * *
+//0 */3 * * *
