@@ -31,4 +31,4 @@ The Weather Data Management API is a Node.js application designed to store and r
   * GET /getUser: Get all users.
   * GET /getUserWeather: Get user weather data for a given day.
 
-    To check each endpoint, refer to the [Postman API Collection](https://api.postman.com/collections/20629426-50d7fe21-fb02-4a6b-b9ed-cfecc009df19?access_key=PMAT-01HKYGJTYQ1ST63QTHT0BE55QV).
+    To check each endpoint, refer to the [Postman API Collection]().
