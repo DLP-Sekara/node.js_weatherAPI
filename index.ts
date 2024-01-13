@@ -32,20 +32,22 @@ con.once("connected", () => {
 });
 
 //cron job
-cron.schedule("*/10 * * * * *", async () => {
+cron.schedule("0 */1 * * *", async () => {
   try {
-    //await setWeatherHourly();
+    await setWeatherHourly();
   } catch (error) {
     console.log("cron error-", error);
   }
 });
 
-cron.schedule("*/30 * * * * *", async () => {
+cron.schedule("0 */3 * * *", async () => {
   try {
-    //await sendWeatherReport();
+    await sendWeatherReport();
   } catch (error) {
     console.log("cron error-", error);
   }
 });
-//0 * * * *
-//0 */3 * * *
+
+//The correct cron time frame is below, temporally I use a little time frame.
+//  0 */1 * * *
+//  0 */3 * * *

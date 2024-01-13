@@ -25,9 +25,9 @@ export const setWeatherHourly = async () => {
 //genarate past 3hours weather report every 3h
 export const sendWeatherReport = async () => {
   try {
+    console.log("check ");
     const allUsers = await getUserService();
     allUsers.forEach(async (user: any) => {
-      console.log("---------------");
       let weatherDataSet = [];
       if (user.weatherData.length >= 3) {
         weatherDataSet = [];
